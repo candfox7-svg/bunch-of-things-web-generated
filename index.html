@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互動式活動大廳 - Premium Web Dashboard</title>
+    <meta name="description" content="全方位互動式網頁大廳，包含跑馬燈、計時器、YouTube 播放器、抽號碼機及即時互動功能。">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Noto+Sans+TC:wght@300;400;700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Top Navigation / Header -->
+        <header class="glass-header">
+            <div class="header-left">
+                <div id="activity-title" class="activity-title floating-animation">活動名稱預設值</div>
+            </div>
+            <div class="header-right">
+                <div class="social-links">
+                    <a href="https://facebook.com" target="_blank" class="social-btn fb" title="Facebook"><i
+                            class="fab fa-facebook-f"></i></a>
+                    <a href="https://youtube.com" target="_blank" class="social-btn yt" title="YouTube"><i
+                            class="fab fa-youtube"></i></a>
+                    <a href="https://instagram.com" target="_blank" class="social-btn ig" title="Instagram"><i
+                            class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="dashboard-grid">
+
+            <!-- 1. Marquee Section -->
+            <section class="section marquee-section full-width">
+                <div id="marquee-container" class="marquee-wrapper">
+                    <div id="marquee-content" class="marquee-text">跑馬燈 測試 ✨ </div>
+                </div>
+            </section>
+
+            <!-- 2. Timer Section -->
+            <section class="section timer-section glass-card">
+                <div class="card-header"><i class="fas fa-clock"></i> 倒數計時器</div>
+                <div class="timer-display" id="timer-display">00:00</div>
+                <div class="timer-controls">
+                    <div class="input-group">
+                        <input type="number" id="timer-min" placeholder="分" min="0" value="5">
+                        <input type="number" id="timer-sec" placeholder="秒" min="0" max="59" value="0">
+                    </div>
+                    <div class="btn-group">
+                        <button id="start-timer" class="btn primary-btn"><i class="fas fa-play"></i> 開始</button>
+                        <button id="reset-timer" class="btn secondary-btn"><i class="fas fa-redo"></i> 重設</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. YouTube Section -->
+            <section class="section youtube-section glass-card">
+                <div class="card-header"><i class="fab fa-youtube"></i> YouTube 播放區</div>
+                <div class="yt-player-container">
+                    <div id="yt-placeholder" class="yt-placeholder">
+                        <i class="fab fa-youtube"></i>
+                        <p>請輸入 YouTube 網址以嵌入影片</p>
+                    </div>
+                    <div id="yt-iframe-wrapper" class="hidden">
+                        <!-- iframe will be injected here -->
+                    </div>
+                </div>
+                <div class="yt-input-group">
+                    <input type="text" id="yt-url"
+                        placeholder="貼上 YouTube 影片網址 (例如: https://www.youtube.com/watch?v=...)">
+                    <button id="load-yt" class="btn accent-btn">載入影片</button>
+                </div>
+            </section>
+
+            <!-- 4. Lucky Draw Section -->
+            <section class="section lucky-draw-section glass-card full-width">
+                <div class="card-header"><i class="fas fa-ticket-alt"></i> 隨機抽號碼機</div>
+                <div class="draw-layout">
+                    <div class="draw-settings">
+                        <div class="setting-row">
+                            <label>號碼範圍</label>
+                            <div class="input-range">
+                                <input type="number" id="draw-min" value="1" placeholder="從">
+                                <span>至</span>
+                                <input type="number" id="draw-max" value="50" placeholder="到">
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <label>排除號碼 (逗號隔開)</label>
+                            <input type="text" id="draw-exclude" placeholder="例如: 5, 12, 30">
+                        </div>
+                        <div class="setting-row">
+                            <label>抽取數量</label>
+                            <input type="number" id="draw-count" value="1" min="1">
+                        </div>
+                        <div class="setting-row checkbox-row">
+                            <input type="checkbox" id="draw-unique" checked>
+                            <label for="draw-unique">不重複抽取</label>
+                        </div>
+                        <div class="btn-group">
+                            <button id="start-draw" class="btn primary-btn pulse-btn">開始抽獎</button>
+                            <button id="clear-draw" class="btn danger-btn">清除結果</button>
+                        </div>
+                    </div>
+                    <div class="draw-display">
+                        <div id="draw-result-container" class="draw-result-container">
+                            <!-- Draw items will appear here -->
+                        </div>
+                        <div class="history-tag">已抽取：<span id="draw-history-count">0</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Interaction Section -->
+            <section class="section interaction-section glass-card">
+                <div class="card-header"><i class="fas fa-heart"></i> 即時互動打賞</div>
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <span class="stat-label">❤️ 讚</span>
+                        <span id="count-like" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">⭐ 星星</span>
+                        <span id="count-star" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">🚀 火箭</span>
+                        <span id="count-rocket" class="stat-value">0</span>
+                    </div>
+                </div>
+                <div class="interaction-btns">
+                    <button id="btn-like" class="interact-btn heart"><i class="fas fa-heart"></i></button>
+                    <button id="btn-star" class="interact-btn star"><i class="fas fa-star"></i></button>
+                    <button id="btn-rocket" class="interact-btn rocket"><i class="fas fa-rocket"></i></button>
+                </div>
+            </section>
+
+            <!-- 7. Background Style Setting Card -->
+            <section class="section bg-setting-section glass-card">
+                <div class="card-header"><i class="fas fa-palette"></i> 背景樣式設定</div>
+                <div class="control-tabs">
+                    <div class="control-item">
+                        <label>背景底色</label>
+                        <input type="color" id="input-bg-color" value="#0f172a">
+                    </div>
+                    <hr>
+                    <div class="control-grid">
+                        <div class="control-item">
+                            <label>漸層色 1</label>
+                            <input type="color" id="input-grad-color-1" value="#63e0f1">
+                        </div>
+                        <div class="control-item">
+                            <label>漸層色 2</label>
+                            <input type="color" id="input-grad-color-2" value="#f5c31e">
+                        </div>
+                    </div>
+                    <div class="control-grid">
+                        <div class="control-item">
+                            <label>位置 1 (X, Y %)</label>
+                            <div class="input-range">
+                                <input type="number" id="input-grad-pos-1-x" value="0" min="0" max="100">
+                                <input type="number" id="input-grad-pos-1-y" value="0" min="0" max="100">
+                            </div>
+                        </div>
+                        <div class="control-item">
+                            <label>位置 2 (X, Y %)</label>
+                            <div class="input-range">
+                                <input type="number" id="input-grad-pos-2-x" value="100" min="0" max="100">
+                                <input type="number" id="input-grad-pos-2-y" value="100" min="0" max="100">
+                            </div>
+                        </div>
+                    </div>
+                    <button id="update-bg-settings" class="btn primary-btn w-full">套用背景設定</button>
+                </div>
+            </section>
+
+            <!-- 6. Control Panel (Sidebar/Floating) -->
+            <section class="section control-section glass-card">
+                <div class="card-header"><i class="fas fa-cog"></i> 網頁設定面板</div>
+                <div class="control-tabs">
+                    <div class="control-item">
+                        <label>活動標題</label>
+                        <input type="text" id="input-title" placeholder="輸入活動名稱...">
+                    </div>
+                    <hr>
+                    <div class="control-item">
+                        <label>跑馬燈內容</label>
+                        <textarea id="input-marquee" rows="2" placeholder="輸入跑馬燈訊息..."></textarea>
+                    </div>
+                    <div class="control-grid">
+                        <div class="control-item">
+                            <label>文字顏色</label>
+                            <input type="color" id="marquee-color" value="#ffffff">
+                        </div>
+                        <div class="control-item">
+                            <label>背景顏色</label>
+                            <input type="color" id="marquee-bg" value="#6366f1">
+                        </div>
+                        <div class="control-item">
+                            <label>速度 (秒)</label>
+                            <input type="range" id="marquee-speed" min="5" max="30" value="15" step="1">
+                        </div>
+                    </div>
+                    <button id="update-settings" class="btn primary-btn w-full">更新設定</button>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="main-footer">
+            &copy; 2024 Premium Interaction Suite | Powered by Antigravity
+        </footer>
+    </div>
+
+    <!-- Notification Overlay -->
+    <div id="notification" class="notification-toast hidden"></div>
+
+    <!-- Particle Container for Interactions -->
+    <div id="particle-container"></div>
+
+    <!-- Firebase SDK (Compat Version for local file support) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
