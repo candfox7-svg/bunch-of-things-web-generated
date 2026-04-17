@@ -279,28 +279,46 @@ function timerFinished() {
 // --- 7. YouTube Logic ---
 function loadYouTube() {
     const url = dom.ytUrl.value.trim();
+    if (!url) {
+        showNotification("請先輸入 YouTube 網址 ⚠️");
+        return;
+    }
+    
     const videoId = extractYouTubeId(url);
     
     if (videoId) {
         dom.ytPlaceholder.classList.add('hidden');
         dom.ytIframeWrapper.classList.remove('hidden');
+        // Refined URL for better compatibility and to avoid common embed errors
         dom.ytIframeWrapper.innerHTML = `
             <iframe width="100%" height="100%" 
-                src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
+                src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&enablejsapi=1" 
                 title="YouTube video player" frameborder="0" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                 allowfullscreen></iframe>
         `;
-        showNotification("影片已載入！");
+        showNotification("影片已載入！(已自動靜音播放)");
     } else {
-        showNotification("請輸入有效的 YouTube 網址 ⚠️");
+        showNotification("無法識別此網址，請檢查格式 ⚠️");
     }
 }
 
 function extractYouTubeId(url) {
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-    const match = url.match(regExp);
-    return (match && match[2].length === 11) ? match[2] : null;
+    // Standard ID is 11 chars. Let's try multiple common patterns.
+    const patterns = [
+        /(?:v=|\/)([0-9A-Za-z_-]{11}).*/,
+        /(?:embed\/|v\/|youtu.be\/)([0-9A-Za-z_-]{11})/
+    ];
+    
+    for (const pattern of patterns) {
+        const match = url.match(pattern);
+        if (match && match[1]) return match[1];
+    }
+    
+    // Fallback for raw ID
+    if (url.length === 11 && /^[0-9A-Za-z_-]+$/.test(url)) return url;
+    
+    return null;
 }
 
 // --- 8. Lucky Draw Logic ---
